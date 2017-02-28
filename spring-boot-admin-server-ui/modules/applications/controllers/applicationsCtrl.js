@@ -61,5 +61,21 @@ module.exports = function ($rootScope, $scope, $state, NotificationFilters) {
       $scope.notificationFilters = filters;
     });
   };
+  $scope.chooseColor = function (color) {
+    if (color === 'UP') {
+      return 'green';
+    }else if(color === 'DOWN'){
+      return 'red'
+    }
+    else if(color === 'UNKNOWN'){
+      return 'blue'
+    }
+    else if(color === 'OFFLINE'){
+      return 'orange'
+    }
+    else {
+      return 'white';
+    }
+  };
   $scope.loadFilters();
 };

@@ -1,6 +1,31 @@
 <div class="container-fluid">
   <h3>Monitoring applications</h3>
   <div>
+    <table border="1">
+      <tr ng-repeat="application in filteredApps = (applicationGroups.applications)">
+        <td>{{application.name}}</td>
+        <td><svg height="100" width="100">
+          <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill={{chooseColor(application.statusInfo.status)}} />
+          {{application.statusInfo}}
+        </svg></td>
+      </tr>
+    </table>
+  </div>
+  <!--<div id="square">-->
+    <!--<script type="text/javascript">-->
+      <!--// Su bello código de D3 vendrá acá-->
+      <!--var svgContainer = d3.select("div").append("svg")-->
+                                            <!--.attr("width", 200)-->
+                                            <!--.attr("height", 200);-->
+      <!--//Draw the Circle-->
+      <!--var circle = svgContainer.append("circle")-->
+                               <!--.attr("cx", 30)-->
+                               <!--.attr("cy", 30)-->
+                               <!--.attr("r", 20).attr("fill","GREEN");-->
+    <!--</script>-->
+  <!--</div>-->
+
+  <div>
     <input placeholder="Filter" class="input-xxlarge" type="search" ng-model="searchFilter" />
   </div>
   <table class="table application-list">

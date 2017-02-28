@@ -21,18 +21,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.neo4j.ogm.annotation.*;
 
 /**
  * Represents a certain status a certain time.
  *
  * @author Johannes Stelzer
  */
+@NodeEntity(label="StatusInfo")
 public class StatusInfo implements Serializable {
 	private static final long serialVersionUID = 2L;
 
-	private final String status;
-	private final long timestamp;
-	private final Map<String, Serializable> details;
+	@GraphId
+	private Long id;
+	@Property(name="name")
+	private String status;
+	@Property(name = "timestamp")
+	private long timestamp;
+	@Transient
+	private Map<String, Serializable> details;
 
 	protected StatusInfo(String status, long timestamp,
 			Map<String, ? extends Serializable> details) {
@@ -44,6 +51,7 @@ public class StatusInfo implements Serializable {
 
 	public static StatusInfo valueOf(String statusCode,
 			Map<String, ? extends Serializable> details) {
+
 		return new StatusInfo(statusCode, System.currentTimeMillis(), details);
 	}
 
@@ -66,6 +74,9 @@ public class StatusInfo implements Serializable {
 	public static StatusInfo ofOffline() {
 		return ofOffline(null);
 	}
+	public static StatusInfo ofUnauthorized() {
+		return ofUnauthorized(null);
+	}
 
 	public static StatusInfo ofUp(Map<String, ? extends Serializable> details) {
 		return valueOf("UP", details);
@@ -77,6 +88,9 @@ public class StatusInfo implements Serializable {
 
 	public static StatusInfo ofOffline(Map<String, ? extends Serializable> details) {
 		return valueOf("OFFLINE", details);
+	}
+	public static StatusInfo ofUnauthorized(Map<String, ? extends Serializable> details) {
+		return valueOf("UNAUTHORIZED", details);
 	}
 
 	public String getStatus() {
@@ -109,6 +123,10 @@ public class StatusInfo implements Serializable {
 	@JsonIgnore
 	public boolean isUnknown() {
 		return "UNKNOWN".equals(status);
+	}
+	@JsonIgnore
+	public boolean isUnauthorized() {
+		return "UNAUTHORIZED".equals(status);
 	}
 
 	@Override

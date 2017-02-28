@@ -17,6 +17,7 @@ package de.codecentric.boot.admin.model;
 
 import static java.util.Collections.unmodifiableMap;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -24,19 +25,25 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.neo4j.ogm.annotation.*;
 
 /**
  * Represents the info fetched from the info actuator endpoint at a certain time.
  * 
  * @author Johannes Edmeier
  */
+@NodeEntity(label="Info")
 public class Info implements Serializable {
 	private static final long serialVersionUID = 2L;
 	private static Info EMPTY = new Info(0L, null);
 
+	@GraphId
+	private Long id;
 	@JsonIgnore
-	private final long timestamp;
-	private final Map<String, ? extends Serializable> values;
+	@Property
+	private long timestamp;
+	@Transient
+	private Map<String, ? extends Serializable> values;
 
 	protected Info(long timestamp, Map<String, ? extends Serializable> values) {
 		this.timestamp = timestamp;

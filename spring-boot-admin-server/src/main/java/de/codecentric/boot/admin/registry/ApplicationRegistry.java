@@ -18,9 +18,15 @@ package de.codecentric.boot.admin.registry;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import de.codecentric.boot.admin.model.SuperApplication;
+import de.codecentric.boot.admin.repository.ApplicationRepository;
+import de.codecentric.boot.admin.repository.SuperApplicationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.util.Assert;
@@ -42,6 +48,11 @@ public class ApplicationRegistry implements ApplicationEventPublisherAware {
 	private final ApplicationStore store;
 	private final ApplicationIdGenerator generator;
 	private ApplicationEventPublisher publisher;
+	@Autowired
+	private ApplicationRepository applicationRepository;
+	@Autowired
+	private SuperApplicationRepository superApplicationRepository;
+
 
 	public ApplicationRegistry(ApplicationStore store, ApplicationIdGenerator generator) {
 		this.store = store;
@@ -78,9 +89,20 @@ public class ApplicationRegistry implements ApplicationEventPublisherAware {
 		Application registering = builder.build();
 
 		Application replaced = store.save(registering);
+
 		if (replaced == null) {
 			LOGGER.info("New Application {} registered ", registering);
 			publisher.publishEvent(new ClientApplicationRegisteredEvent(registering));
+			/*if(superApplicationRepository.findByName(registering.getProjectName()).isEmpty()){
+				Set instances = new HashSet<Application>();
+				instances.add(registering);
+				superApplicationRepository.save(new SuperApplication(registering.getProjectName(),instances));
+			}
+				SuperApplication superApplication= new SuperApplication(new HashSet<Application>());
+
+			}
+			superApplicationRepository.save();*/
+			applicationRepository.save(registering);
 		} else {
 			if (registering.getId().equals(replaced.getId())) {
 				LOGGER.debug("Application {} refreshed", registering);

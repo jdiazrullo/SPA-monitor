@@ -15,22 +15,24 @@
  */
 package de.codecentric.boot.admin.registry.web;
 
-import java.util.Collection;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import de.codecentric.boot.admin.model.Application;
 import de.codecentric.boot.admin.registry.ApplicationRegistry;
+import de.codecentric.boot.admin.repository.ApplicationRepository;
 import de.codecentric.boot.admin.web.AdminController;
+import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.session.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * REST controller for controlling registration of managed applications.
@@ -43,6 +45,11 @@ public class RegistryController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RegistryController.class);
 
 	private final ApplicationRegistry registry;
+	@Autowired
+	private ApplicationContext context;
+
+	@Autowired
+	private ApplicationRepository applicationRepository;
 
 	public RegistryController(ApplicationRegistry registry) {
 		this.registry = registry;

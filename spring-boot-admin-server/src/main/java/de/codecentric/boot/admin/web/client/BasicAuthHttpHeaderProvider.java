@@ -20,13 +20,17 @@ public class BasicAuthHttpHeaderProvider implements HttpHeadersProvider {
 	public HttpHeaders getHeaders(Application application) {
 		String username = application.getMetadata().get("user.name");
 		String password = application.getMetadata().get("user.password");
+		String tokenType = application.getMetadata().get("token-type");
+		String token = application.getMetadata().get("token");
 
 		HttpHeaders headers = new HttpHeaders();
 
 		if (StringUtils.hasText(username) && StringUtils.hasText(password)) {
 			headers.set(HttpHeaders.AUTHORIZATION, encode(username, password));
 		}
-
+		if (StringUtils.hasText(tokenType) && StringUtils.hasText(token)) {
+			headers.set(HttpHeaders.AUTHORIZATION, tokenType+" "+token);
+		}
 		return headers;
 	}
 

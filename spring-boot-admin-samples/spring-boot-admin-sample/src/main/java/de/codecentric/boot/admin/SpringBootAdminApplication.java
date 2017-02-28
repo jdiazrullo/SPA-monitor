@@ -19,10 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.data.neo4j.Neo4jDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -35,6 +34,7 @@ import de.codecentric.boot.admin.notify.filter.FilteringNotifier;
 
 @Configuration
 @EnableAutoConfiguration
+@EntityScan("de.codecentric.boot.admin.model")
 @EnableAdminServer
 public class SpringBootAdminApplication {
 	public static void main(String[] args) {

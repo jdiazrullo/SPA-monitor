@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -40,20 +43,33 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 /**
  * The domain model for all registered application at the spring boot admin application.
  */
+@NodeEntity
 @JsonDeserialize(using = Application.Deserializer.class)
 public class Application implements Serializable {
 	private static final long serialVersionUID = 2L;
+	@GraphId
+	private Long idd;
 
 	private final String id;
-	private final String name;
-	private final String managementUrl;
-	private final String healthUrl;
-	private final String serviceUrl;
-	private final StatusInfo statusInfo;
-	private final String source;
+    @Property(name="name")
+	private String name;
+    @Property(name="managementUrl")
+    private String managementUrl;
+    @Property(name="healthUrl")
+    private String healthUrl;
+    @Property(name="serviceUrl")
+    private String serviceUrl;
+	//@Property(name="statusInfo")
+    private StatusInfo statusInfo;
+    @Property(name="source")
+    private String source;
 	@JsonSerialize(using = Application.MetadataSerializer.class)
-	private final Map<String, String> metadata;
-	private final Info info;
+    //@Property(name="mdata")
+    private final Map<String, String> metadata;
+    //@Property(name="information")
+    private Info info;
+	private String projectName;
+	private SuperApplication instance;
 
 	protected Application(Builder builder) {
 		Assert.hasText(builder.name, "name must not be empty!");
@@ -68,6 +84,7 @@ public class Application implements Serializable {
 		this.source = builder.source;
 		this.metadata = Collections.unmodifiableMap(new HashMap<>(builder.metadata));
 		this.info = builder.info;
+		this.projectName = builder.projectName;
 	}
 
 	public static Builder create(String name) {
@@ -88,6 +105,7 @@ public class Application implements Serializable {
 		private String source;
 		private Map<String, String> metadata = new HashMap<>();
 		private Info info = Info.empty();
+		private String projectName;
 
 		private Builder(String name) {
 			this.name = name;
@@ -103,6 +121,7 @@ public class Application implements Serializable {
 			this.source = application.source;
 			this.metadata.putAll(application.getMetadata());
 			this.info = application.info;
+			this.projectName = application.projectName;
 		}
 
 		public Builder withName(String name) {
@@ -154,7 +173,6 @@ public class Application implements Serializable {
 			this.info = info;
 			return this;
 		}
-
 		public Application build() {
 			return new Application(this);
 		}
